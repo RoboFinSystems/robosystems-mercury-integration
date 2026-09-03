@@ -1,0 +1,28 @@
+name: Claude Code Review
+
+# Triggers only. The implementation - author gate, runner selection, action
+# pins - lives in RoboFinSystems/robosystems/.github/workflows/claude-review.yml
+# so a claude-code-action bump is one PR instead of one per repo.
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude:
+    # Granted here as well as in the called workflow: a called workflow's jobs
+    # cannot exceed the permissions of the caller's GITHUB_TOKEN.
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      actions: read
+      id-token: write
+    uses: RoboFinSystems/robosystems/.github/workflows/claude-review.yml@main
+    secrets: inherit

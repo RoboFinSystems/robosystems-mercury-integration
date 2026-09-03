@@ -1,0 +1,91 @@
+# Tier-0 classification — Mercury's own signals mapped to accounts in your
+# chart. No model, no credits: three lookups in order of trust.
+#
+#   1. gl_allocations   — the GL code you (or Mercury's auto-categorization)
+#                         assigned in Mercury's Accounting tab, present when
+#                         Mercury is linked to QuickBooks / Xero / NetSuite.
+#   2. custom category  — Mercury's per-transaction category (categoryData).
+#   3. mercuryCategory  — the merchant bucket Mercury stamps on card spend.
+#
+# The first lookup that hits wins and is recorded on the event as
+# `metadata.suggested_account` + `metadata.classification_source`. Nothing
+# here posts anything: events land in the inbox as `captured`, and posting
+# is a handler you (or Claude) author on the platform once you agree with
+# the suggestion.
+#
+# Every account referenced below is created in the "Mercury Chart of
+# Accounts" taxonomy block on first run. Bank and card accounts come from
+# the Mercury API, not from this file. Edit freely; re-run to apply.
+
+[accounts]
+"mercury:Revenue" = { name = "Revenue", trait = "revenue", balance = "credit" }
+"mercury:InterestIncome" = { name = "Interest income", trait = "revenue", balance = "credit" }
+"mercury:CreditCardRewards" = { name = "Credit card rewards", trait = "revenue", balance = "credit" }
+"mercury:CostOfRevenue" = { name = "Cost of revenue", trait = "expense", balance = "debit" }
+"mercury:Payroll" = { name = "Payroll", trait = "expense", balance = "debit" }
+"mercury:EmployeeBenefits" = { name = "Employee benefits", trait = "expense", balance = "debit" }
+"mercury:SoftwareSubscriptions" = { name = "Software & subscriptions", trait = "expense", balance = "debit" }
+"mercury:MarketingAdvertising" = { name = "Marketing & advertising", trait = "expense", balance = "debit" }
+"mercury:ProfessionalFees" = { name = "Legal & professional fees", trait = "expense", balance = "debit" }
+"mercury:Insurance" = { name = "Insurance", trait = "expense", balance = "debit" }
+"mercury:BankFees" = { name = "Bank fees", trait = "expense", balance = "debit" }
+"mercury:PaymentProcessingFees" = { name = "Payment processing fees", trait = "expense", balance = "debit" }
+"mercury:TravelTransportation" = { name = "Travel & transportation", trait = "expense", balance = "debit" }
+"mercury:BusinessMeals" = { name = "Business meals", trait = "expense", balance = "debit" }
+"mercury:Entertainment" = { name = "Entertainment", trait = "expense", balance = "debit" }
+"mercury:OfficeSuppliesEquipment" = { name = "Office supplies & equipment", trait = "expense", balance = "debit" }
+"mercury:ShippingPostage" = { name = "Shipping & postage", trait = "expense", balance = "debit" }
+"mercury:InventoryMaterials" = { name = "Inventory & materials", trait = "expense", balance = "debit" }
+"mercury:TaxesLicenses" = { name = "Taxes & licenses", trait = "expense", balance = "debit" }
+"mercury:Utilities" = { name = "Utilities", trait = "expense", balance = "debit" }
+"mercury:Rent" = { name = "Rent", trait = "expense", balance = "debit" }
+
+# Mercury's default custom categories. An empty string means "this is a
+# movement, not income or expense" — no account is suggested.
+[custom_categories]
+"Revenue" = "mercury:Revenue"
+"Interest Earned" = "mercury:InterestIncome"
+"COGS" = "mercury:CostOfRevenue"
+"Payroll" = "mercury:Payroll"
+"Employee Benefits" = "mercury:EmployeeBenefits"
+"Software & Subscriptions" = "mercury:SoftwareSubscriptions"
+"Marketing & Advertising" = "mercury:MarketingAdvertising"
+"Legal & Professional Services" = "mercury:ProfessionalFees"
+"Insurance" = "mercury:Insurance"
+"Bank Fees" = "mercury:BankFees"
+"Payment Processing Fees" = "mercury:PaymentProcessingFees"
+"Travel & Transportation" = "mercury:TravelTransportation"
+"Business Meals" = "mercury:BusinessMeals"
+"Entertainment" = "mercury:Entertainment"
+"Office Supplies & Equipment" = "mercury:OfficeSuppliesEquipment"
+"Shipping & Postage" = "mercury:ShippingPostage"
+"Inventory & Materials" = "mercury:InventoryMaterials"
+"Transfer" = ""
+"Credit & Loan Payments" = ""
+"Financing Proceeds" = ""
+
+# The merchant bucket Mercury assigns to card spend (the mercuryCategory
+# enum). Buckets not listed here suggest nothing.
+[mercury_categories]
+"Software" = "mercury:SoftwareSubscriptions"
+"Advertising" = "mercury:MarketingAdvertising"
+"ProfessionalServices" = "mercury:ProfessionalFees"
+"Insurance" = "mercury:Insurance"
+"Fees" = "mercury:BankFees"
+"Taxes" = "mercury:TaxesLicenses"
+"GovernmentServices" = "mercury:TaxesLicenses"
+"Utilities" = "mercury:Utilities"
+"Airlines" = "mercury:TravelTransportation"
+"Travel" = "mercury:TravelTransportation"
+"Lodging" = "mercury:TravelTransportation"
+"Transportation" = "mercury:TravelTransportation"
+"Restaurants" = "mercury:BusinessMeals"
+"Entertainment" = "mercury:Entertainment"
+"OfficeSupplies" = "mercury:OfficeSuppliesEquipment"
+"Shipping" = "mercury:ShippingPostage"
+
+# GL codes from your accounting link, by their Mercury glCodeName. Names not
+# listed here become accounts of their own (qname mercury:gl_<Name>) with the
+# trait inferred from the name — list them to steer them somewhere better.
+[gl_codes]
+"Credit card rewards" = "mercury:CreditCardRewards"
